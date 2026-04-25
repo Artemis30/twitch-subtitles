@@ -23,7 +23,7 @@ La carpeta `icons/` necesita tres archivos PNG:
 - `icon48.png` — 48×48 px
 - `icon128.png` — 128×128 px
 
-Puedes usar cualquier imagen PNG y redimensionarla, o generarla con herramientas como [favicon.io](https://favicon.io).
+Puedes usar cualquier imagen PNG y redimensionarla, de todas formas el archivo ya las incluye aunque las puedes cambiar si quieres
 
 ---
 
