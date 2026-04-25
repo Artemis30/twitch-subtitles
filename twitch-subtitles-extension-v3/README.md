@@ -95,16 +95,6 @@ twitch-subtitles-extension/
 
 ---
 
-## Próximos pasos sugeridos
-
-- [ ] Soporte para Firefox usando `browser.tabs.captureTab`
-- [ ] Modo "solo subtítulos" sin traducción para ahorro de coste
-- [ ] Publicar en Chrome Web Store
-- [ ] Historial de transcripción descargable
-- [ ] Detección automática del idioma del streamer
-
----
-
 ## Licencia
 
 MIT — libre para usar, modificar y distribuir.
