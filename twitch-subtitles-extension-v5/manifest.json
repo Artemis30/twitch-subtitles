@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "TwitchSubs – Subtítulos en tiempo real",
+  "version": "1.3.0",
+  "description": "Subtítulos y traducción en tiempo real para cualquier stream de Twitch usando Deepgram.",
+  "permissions": [
+    "tabCapture",
+    "storage",
+    "activeTab",
+    "scripting",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://www.twitch.tv/*",
+    "https://api.deepgram.com/*",
+    "https://api-free.deepl.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.twitch.tv/*"],
+      "js": ["content_script.js"],
+      "css": ["subtitles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

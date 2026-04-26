@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>TwitchSubs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #13131a;
+      --bg3: #1c1c26;
+      --border: #2a2a38;
+      --purple: #9147ff;
+      --purple-dim: #6b35cc;
+      --text: #e8e8f0;
+      --text2: #8888aa;
+      --text3: #55556a;
+      --green: #00c472;
+      --red: #f87171;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      width: 330px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--purple);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-version {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all 0.2s;
+    }
+
+    .status-pill.active {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(0,196,114,0.08);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text3);
+      transition: background 0.2s;
+    }
+
+    .status-pill.active .status-dot { background: var(--green); }
+
+    /* ── Sections ── */
+    .section {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text3);
+    }
+
+    /* ── Toggle ── */
+    .toggle {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .track {
+      position: absolute;
+      inset: 0;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      transition: all 0.2s;
+    }
+    .thumb {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--text2);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: all 0.2s;
+    }
+    .toggle input:checked + .track { background: var(--purple); border-color: var(--purple); }
+    .toggle input:checked + .track + .thumb { left: 18px; background: white; }
+
+    /* ── Row ── */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .row:last-child { margin-bottom: 0; }
+    .row-label { color: var(--text2); font-size: 13px; }
+    .row-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+
+    /* ── Inputs ── */
+    input[type="text"], input[type="password"], select {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 7px 10px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus { border-color: var(--purple); }
+    input::placeholder { color: var(--text3); }
+    select option { background: var(--bg2); }
+
+    .field { margin-bottom: 10px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 5px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Range ── */
+    input[type="range"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      background: var(--bg3);
+      border-radius: 4px;
+      outline: none;
+      border: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--purple);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(145,71,255,0.2);
+    }
+
+    /* ── Color picker ── */
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .color-row:last-child { margin-bottom: 0; }
+    .color-label { color: var(--text2); font-size: 13px; flex: 1; }
+    .color-swatches {
+      display: flex;
+      gap: 5px;
+    }
+    .swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .swatch.active { border-color: white; transform: scale(1.15); }
+
+    /* ── Speaker preview ── */
+    .speaker-preview {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .speaker-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 4px;
+    }
+    .speaker-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .speaker-text {
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    /* ── Lang grid ── */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .lang-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text2);
+      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 6px 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .lang-btn.selected {
+      border-color: var(--purple);
+      background: rgba(145,71,255,0.12);
+      color: var(--text);
+    }
+
+    /* ── Main button ── */
+    .btn-wrap { padding: 14px 16px; }
+    .btn-main {
+      width: 100%;
+      padding: 11px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.01em;
+    }
+    .btn-start { background: var(--purple); color: white; }
+    .btn-stop { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+    .btn-main:hover { opacity: 0.85; }
+    .btn-main:active { transform: scale(0.98); }
+
+    .hint {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+    .hint a { color: var(--purple); text-decoration: none; }
+
+    .error-msg {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.3);
+      border-radius: 6px;
+      color: var(--red);
+      font-size: 11px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .divider { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text { font-size: 10px; color: var(--text3); white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">S</div>
+    <div>
+      <div class="logo-text">TwitchSubs</div>
+      <div class="logo-version">v1.5.0</div>
+    </div>
+  </div>
+  <div class="status-pill" id="status-pill">
+    <div class="status-dot"></div>
+    <span id="status-text">Inactivo</span>
+  </div>
+</div>
+
+<!-- API Keys -->
+<div class="section">
+  <div class="section-title" style="margin-bottom:12px;">API Keys</div>
+  <div class="field">
+    <div class="field-label">DEEPGRAM — transcripción</div>
+    <input type="password" id="key-deepgram" placeholder="dg_xxxxxxxxxxxxxxxx" />
+    <p class="hint">Gratis 200h/mes · <a href="https://console.deepgram.com" target="_blank">Obtener key →</a></p>
+  </div>
+  <div class="field">
+    <div class="field-label">DEEPL — traducción (opcional)</div>
+    <input type="password" id="key-deepl" placeholder=":fx al final indica plan free" />
+    <p class="hint">500k chars/mes gratis · <a href="https://www.deepl.com/pro-api" target="_blank">Obtener key →</a></p>
+  </div>
+</div>
+
+<!-- Idiomas -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Idiomas</span>
+  </div>
+  <div class="row">
+    <span class="row-label">Idioma del streamer</span>
+    <select id="source-lang" style="width:130px;">
+      <option value="en">🇬🇧 Inglés</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Francés</option>
+      <option value="de">🇩🇪 Alemán</option>
+      <option value="pt">🇧🇷 Portugués</option>
+      <option value="ko">🇰🇷 Coreano</option>
+      <option value="ja">🇯🇵 Japonés</option>
+      <option value="it">🇮🇹 Italiano</option>
+      <option value="ru">🇷🇺 Ruso</option>
+      <option value="zh">🇨🇳 Chino</option>
+    </select>
+  </div>
+  <div class="row">
+    <span class="row-label">Traducir subtítulos</span>
+    <label class="toggle">
+      <input type="checkbox" id="translate-enabled">
+      <span class="track"></span>
+      <span class="thumb"></span>
+    </label>
+  </div>
+  <div id="target-section" style="display:none;">
+    <div class="lang-grid" id="lang-grid">
+      <button class="lang-btn selected" data-lang="ES">🇪🇸 Español</button>
+      <button class="lang-btn" data-lang="EN-GB">🇬🇧 English</button>
+      <button class="lang-btn" data-lang="FR">🇫🇷 Français</button>
+      <button class="lang-btn" data-lang="DE">🇩🇪 Deutsch</button>
+      <button class="lang-btn" data-lang="PT-BR">🇧🇷 Português</button>
+      <button class="lang-btn" data-lang="JA">🇯🇵 日本語</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hablantes -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Detección de hablantes</span>
+    <label class="toggle">
+      <input type="checkbox" id="diarize-enabled" checked>
+      <span class="track"></span>
+      <span class="thumb"></span>
+    </label>
+  </div>
+  <div class="speaker-preview" id="speaker-preview">
+    <div class="speaker-line" style="border-left: 3px solid #a78bfa;">
+      <span class="speaker-badge" style="color:#a78bfa;">S1</span>
+      <span class="speaker-text">Hola, bienvenidos al stream</span>
+    </div>
+    <div class="speaker-line" style="border-left: 3px solid #34d399;">
+      <span class="speaker-badge" style="color:#34d399;">S2</span>
+      <span class="speaker-text">¡Gracias por el sub!</span>
+    </div>
+  </div>
+</div>
+
+<!-- Apariencia -->
+<div class="section">
+  <div class="section-title" style="margin-bottom:12px;">Apariencia</div>
+
+  <div class="row">
+    <span class="row-label">Tamaño de fuente</span>
+    <span class="row-val" id="font-size-val">16px</span>
+  </div>
+  <input type="range" id="font-size" min="12" max="28" value="16" step="1" style="width:100%;margin-bottom:12px;">
+
+  <div class="row">
+    <span class="row-label">Opacidad fondo</span>
+    <span class="row-val" id="bg-opacity-val">82%</span>
+  </div>
+  <input type="range" id="bg-opacity" min="0.2" max="1" value="0.82" step="0.05" style="width:100%;margin-bottom:12px;">
+
+  <div class="color-row">
+    <span class="color-label">Color del texto</span>
+    <div class="color-swatches" id="color-swatches">
+      <div class="swatch active" data-color="#ffffff" style="background:#ffffff;" title="Blanco"></div>
+      <div class="swatch" data-color="#fbbf24" style="background:#fbbf24;" title="Amarillo"></div>
+      <div class="swatch" data-color="#86efac" style="background:#86efac;" title="Verde"></div>
+      <div class="swatch" data-color="#93c5fd" style="background:#93c5fd;" title="Azul"></div>
+      <div class="swatch" data-color="#f9a8d4" style="background:#f9a8d4;" title="Rosa"></div>
+      <div class="swatch" data-color="#000000" style="background:#000000;border:1px solid #444;" title="Negro"></div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom:0;">
+    <span class="row-label">Subtítulos visibles</span>
+    <label class="toggle">
+      <input type="checkbox" id="subs-enabled" checked>
+      <span class="track"></span>
+      <span class="thumb"></span>
+    </label>
+  </div>
+</div>
+
+<div class="btn-wrap">
+  <button class="btn-main btn-start" id="btn-toggle">Iniciar subtítulos</button>
+  <div class="error-msg" id="error-msg"></div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
